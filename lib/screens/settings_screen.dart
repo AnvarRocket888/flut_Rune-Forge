@@ -209,31 +209,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
-            // About section
-            _sectionHeader('About', isTablet),
-            SliverToBoxAdapter(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16, vertical: 4),
-                padding: const EdgeInsets.all(16),
-                decoration: _cardDecoration(),
-                child: Column(
-                  children: [
-                    _infoRow('📱 App', 'Rune Forge', isTablet),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Container(height: 0.5, color: AppColors.border),
-                    ),
-                    _infoRow('🔢 Version', '1.0.0', isTablet),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Container(height: 0.5, color: AppColors.border),
-                    ),
-                    _infoRow('🛠️ Built with', 'Flutter & Cupertino', isTablet),
-                  ],
-                ),
-              ),
-            ),
-
             // Reset button (dangerous)
             SliverToBoxAdapter(
               child: Padding(

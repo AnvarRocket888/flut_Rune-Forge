@@ -4,10 +4,7 @@ import '../core/app_constants.dart';
 import '../core/analytics_stub.dart';
 import '../services/game_state.dart';
 import '../widgets/animated_background.dart';
-import '../widgets/glowing_card.dart';
 import '../widgets/animated_emoji.dart';
-import '../widgets/xp_progress_bar.dart';
-import '../widgets/stat_card.dart';
 import '../models/rune_model.dart';
 import 'rune_detail_screen.dart';
 
@@ -50,22 +47,6 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  String get _greeting {
-    final hour = DateTime.now().hour;
-    if (hour < 6) return 'Good night';
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  }
-
-  String get _greetingEmoji {
-    final hour = DateTime.now().hour;
-    if (hour < 6) return '🌙';
-    if (hour < 12) return '☀️';
-    if (hour < 18) return '🌤️';
-    return '🌅';
-  }
-
   void _collectRune() {
     if (!gs.canDropRune) return;
     final rune = gs.collectRune();
@@ -88,63 +69,64 @@ class _HomeScreenState extends State<HomeScreen>
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(child: SizedBox(height: mq.padding.top + 16)),
+              SliverToBoxAdapter(child: SizedBox(height: mq.padding.top + 8)),
 
-              // Greeting
+              // ── Forge Banner ─────────────────────────────────
               SliverToBoxAdapter(
                 child: SlideTransition(
                   position: _greetingSlide,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$_greeting $_greetingEmoji',
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: isTablet ? 18 : 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              gs.profile.name,
-                              style: TextStyle(
-                                color: AppColors.textGold,
-                                fontSize: isTablet ? 34 : 28,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
+                    padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isTablet ? 28 : 20,
+                        vertical: isTablet ? 20 : 16,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.bgMid,
+                            const Color(0xFF1A1040),
                           ],
                         ),
-                        // Date badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.bgCard,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const AnimatedEmoji(emoji: '🌙', size: 18, pulse: true),
-                              const SizedBox(width: 6),
-                              Text(
-                                _formattedDate(),
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: isTablet ? 14 : 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.borderGold.withValues(alpha: 0.35),
                         ),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Left: title block
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '⚒️  THE FORGE',
+                                  style: TextStyle(
+                                    color: AppColors.textGold,
+                                    fontSize: isTablet ? 24 : 19,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  gs.profile.name,
+                                  style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: isTablet ? 15 : 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Right: level orb
+                          _buildLevelOrb(isTablet),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -152,189 +134,101 @@ class _HomeScreenState extends State<HomeScreen>
 
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // Dream Guide card
+              // ── HERO: Collect Rune Orb ────────────────────────
               SliverToBoxAdapter(
-                child: GlowingCard(
-                  margin: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
-                  child: Row(
-                    children: [
-                      const AnimatedEmoji(emoji: '🌟', size: 44, bounce: true, pulse: true),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Rune Guide ⭐',
-                              style: TextStyle(
-                                color: AppColors.textGold,
-                                fontSize: isTablet ? 20 : 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _getGuideMessage(),
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: isTablet ? 15 : 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                child: Center(child: _buildCollectOrb(isTablet)),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 8)),
+
+              // Energy strip below orb
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 80 : 48),
+                  child: _buildCompactEnergyStrip(isTablet),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // Stats row
+              // ── Stats 2×2 grid ────────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: StatCard(
-                          emoji: '🔥',
-                          value: '${gs.profile.currentStreak}',
-                          label: 'Day Streak',
-                          accentColor: AppColors.elementFire,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: StatCard(
-                          emoji: '📦',
-                          value: '${gs.totalRunes}',
-                          label: 'Runes',
-                          accentColor: AppColors.rarityEpic,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: StatCard(
-                          emoji: '⭐',
-                          value: '${gs.profile.xp}',
-                          label: 'XP',
-                          accentColor: AppColors.accent,
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: _buildStatGrid(isTablet),
                 ),
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
 
-              // Level progress
-              SliverToBoxAdapter(
-                child: GlowingCard(
-                  margin: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Text('⭐ ', style: TextStyle(fontSize: 16)),
-                              Text(
-                                AppConstants.levelTitle(gs.profile.level),
-                                style: TextStyle(
-                                  color: AppColors.textGold,
-                                  fontSize: isTablet ? 17 : 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '${gs.profile.xp} XP',
-                            style: TextStyle(
-                              color: AppColors.textGold,
-                              fontSize: isTablet ? 17 : 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      XpProgressBar(
-                        progress: gs.profile.levelProgress,
-                        currentXp: gs.profile.xpInCurrentLevel,
-                        targetXp: gs.profile.xpForCurrentLevel,
-                        label: '${gs.profile.xpToNextLevel} XP to next level',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-              // Collect Rune button
+              // ── XP level strip ────────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
-                  child: _buildCollectButton(isTablet),
+                  child: _buildXpStrip(isTablet),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // Energy bar
+              // ── Rune divider ──────────────────────────────────
               SliverToBoxAdapter(
-                child: GlowingCard(
-                  margin: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
-                  glowColor: AppColors.elementSpirit,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 24),
+                  child: Row(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Energy ⚡',
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: isTablet ? 17 : 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            '${gs.profile.energy} / ${AppConstants.maxEnergy}',
-                            style: TextStyle(
-                              color: AppColors.elementSpirit,
-                              fontSize: isTablet ? 15 : 13,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                      Expanded(child: Container(height: 1, color: AppColors.borderGold.withValues(alpha: 0.2))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text('✦ ᚱ ✦', style: TextStyle(color: AppColors.textGold.withValues(alpha: 0.5), fontSize: 14, letterSpacing: 4)),
                       ),
-                      const SizedBox(height: 8),
-                      _buildEnergyBar(),
+                      Expanded(child: Container(height: 1, color: AppColors.borderGold.withValues(alpha: 0.2))),
                     ],
                   ),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-              // Recent runes
+              // ── Daily Omen scroll ─────────────────────────────
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16),
+                  child: _buildOmenCard(isTablet),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+              // ── Recent Runes ──────────────────────────────────
               if (gs.runes.isNotEmpty) ...[
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 20),
-                    child: Text(
-                      'Recent Runes ✨',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: isTablet ? 20 : 17,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Recent Runes',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: isTablet ? 18 : 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${gs.runes.length}',
+                            style: TextStyle(color: AppColors.accent, fontSize: isTablet ? 13 : 11, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -353,10 +247,7 @@ class _HomeScreenState extends State<HomeScreen>
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           child: SizedBox(
                             width: isTablet ? 110 : 90,
-                            child: _RuneMiniCard(
-                              rune: rune,
-                              onTap: () => _showRuneDetail(rune),
-                            ),
+                            child: _RuneMiniCard(rune: rune, onTap: () => _showRuneDetail(rune)),
                           ),
                         );
                       },
@@ -364,31 +255,6 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
               ],
-
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-              // Quote
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isTablet ? 60 : 32),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.bgCard.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      gs.randomQuote,
-                      style: TextStyle(
-                        color: AppColors.textHint,
-                        fontSize: isTablet ? 15 : 13,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
 
               SliverToBoxAdapter(child: SizedBox(height: mq.padding.bottom + 100)),
             ],
@@ -402,39 +268,132 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildCollectButton(bool isTablet) {
+  // ── Redesigned widgets ────────────────────────────────────────
+
+  Widget _buildLevelOrb(bool isTablet) {
+    final level = gs.profile.level;
+    final title = AppConstants.levelTitle(level);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutBack,
+      builder: (_, v, child) => Transform.scale(scale: v, child: child),
+      child: Container(
+        width: isTablet ? 80 : 66,
+        height: isTablet ? 80 : 66,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.accentDark, AppColors.accent],
+          ),
+          border: Border.all(color: AppColors.borderGold, width: 1.5),
+          boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: 0.4), blurRadius: 14)],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Lv.$level',
+              style: TextStyle(color: AppColors.bgDark, fontSize: isTablet ? 16 : 13, fontWeight: FontWeight.w900),
+            ),
+            Text(
+              title.split(' ').first,
+              style: TextStyle(color: AppColors.bgDark.withValues(alpha: 0.75), fontSize: isTablet ? 10 : 8),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCollectOrb(bool isTablet) {
     final canCollect = gs.canDropRune;
+    final orbSize = isTablet ? 160.0 : 130.0;
 
     return GestureDetector(
       onTap: canCollect ? _collectRune : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(vertical: isTablet ? 18 : 14),
-        decoration: BoxDecoration(
-          gradient: canCollect
-              ? const LinearGradient(colors: [AppColors.accentDark, AppColors.accent, AppColors.accentBright])
-              : null,
-          color: canCollect ? null : AppColors.bgCardLight,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: canCollect
-              ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.4), blurRadius: 16)]
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.8, end: 1.0),
+        duration: const Duration(milliseconds: 1200),
+        curve: Curves.easeInOut,
+        builder: (_, v, child) {
+          return Transform.scale(scale: v, child: child);
+        },
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            AnimatedEmoji(
-              emoji: canCollect ? '✨' : '⏳',
-              size: isTablet ? 24 : 20,
-              pulse: canCollect,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              canCollect ? 'Collect Rune' : _formatTimeRemaining(),
-              style: TextStyle(
-                color: canCollect ? AppColors.bgDark : AppColors.textHint,
-                fontSize: isTablet ? 18 : 16,
-                fontWeight: FontWeight.w700,
+            // Outer glow ring
+            if (canCollect)
+              Container(
+                width: orbSize + 24,
+                height: orbSize + 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.accent.withValues(alpha: 0.25),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.2),
+                      blurRadius: 30,
+                      spreadRadius: 8,
+                    ),
+                  ],
+                ),
+              ),
+            // Main orb
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              width: orbSize,
+              height: orbSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: canCollect
+                    ? const RadialGradient(colors: [AppColors.accentBright, AppColors.accent, AppColors.accentDark])
+                    : RadialGradient(colors: [AppColors.bgCardLight, AppColors.bgCard]),
+                boxShadow: canCollect
+                    ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.5), blurRadius: 28, spreadRadius: 4)]
+                    : [],
+                border: Border.all(
+                  color: canCollect ? AppColors.borderGold : AppColors.border,
+                  width: canCollect ? 2 : 1,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedEmoji(
+                    emoji: canCollect ? '⚡' : '⏳',
+                    size: isTablet ? 40 : 32,
+                    pulse: canCollect,
+                    bounce: canCollect,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    canCollect ? 'COLLECT' : _formatTimeRemaining(),
+                    style: TextStyle(
+                      color: canCollect ? AppColors.bgDark : AppColors.textHint,
+                      fontSize: isTablet ? 14 : 11,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: canCollect ? 2 : 0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (canCollect)
+                    Text(
+                      'RUNE',
+                      style: TextStyle(
+                        color: AppColors.bgDark.withValues(alpha: 0.7),
+                        fontSize: isTablet ? 12 : 10,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -443,25 +402,179 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildEnergyBar() {
-    final progress = gs.profile.energy / AppConstants.maxEnergy;
-    return Container(
-      height: 8,
-      decoration: BoxDecoration(
-        color: AppColors.bgCardLight,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: FractionallySizedBox(
-        alignment: Alignment.centerLeft,
-        widthFactor: progress.clamp(0, 1),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            gradient: const LinearGradient(
-              colors: [AppColors.elementSpirit, AppColors.accentBright],
+  Widget _buildCompactEnergyStrip(bool isTablet) {
+    final pct = gs.profile.energy / AppConstants.maxEnergy;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('⚡ Energy', style: TextStyle(color: AppColors.textHint, fontSize: isTablet ? 13 : 11)),
+            Text('${gs.profile.energy}/${AppConstants.maxEnergy}', style: TextStyle(color: AppColors.elementSpirit, fontSize: isTablet ? 13 : 11, fontWeight: FontWeight.w600)),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Container(
+          height: 5,
+          decoration: BoxDecoration(color: AppColors.bgCardLight, borderRadius: BorderRadius.circular(3)),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: pct.clamp(0, 1),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+                gradient: const LinearGradient(colors: [AppColors.elementSpirit, AppColors.accentBright]),
+              ),
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildStatGrid(bool isTablet) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _statTile('🔥', '${gs.profile.currentStreak}', 'Day Streak', AppColors.elementFire, isTablet)),
+            const SizedBox(width: 10),
+            Expanded(child: _statTile('🏰', '${gs.completedFloors}', 'Floors Built', AppColors.accent, isTablet)),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(child: _statTile('📜', '${gs.totalRunes}', 'Runes Found', AppColors.rarityEpic, isTablet)),
+            const SizedBox(width: 10),
+            Expanded(child: _statTile('🪄', '${gs.activeSpells}', 'Active Spells', AppColors.elementWater, isTablet)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _statTile(String emoji, String value, String label, Color accent, bool isTablet) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: isTablet ? 20 : 14, vertical: isTablet ? 16 : 12),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border(left: BorderSide(color: accent, width: 3)),
+      ),
+      child: Row(
+        children: [
+          Text(emoji, style: TextStyle(fontSize: isTablet ? 24 : 20)),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  color: accent,
+                  fontSize: isTablet ? 22 : 19,
+                  fontWeight: FontWeight.w900,
+                  height: 1,
+                ),
+              ),
+              Text(
+                label,
+                style: TextStyle(color: AppColors.textHint, fontSize: isTablet ? 12 : 10),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildXpStrip(bool isTablet) {
+    final progress = gs.profile.levelProgress;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: isTablet ? 18 : 14, vertical: isTablet ? 12 : 10),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Text('⭐', style: TextStyle(fontSize: isTablet ? 18 : 15)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppConstants.levelTitle(gs.profile.level),
+                      style: TextStyle(color: AppColors.textGold, fontSize: isTablet ? 14 : 12, fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      '${gs.profile.xpInCurrentLevel} / ${gs.profile.xpForCurrentLevel} XP',
+                      style: TextStyle(color: AppColors.textHint, fontSize: isTablet ? 12 : 10),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: Container(
+                    height: 5,
+                    color: AppColors.bgCardLight,
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: progress.clamp(0.0, 1.0),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(colors: [AppColors.accentDark, AppColors.accent, AppColors.accentBright]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOmenCard(bool isTablet) {
+    return Container(
+      padding: EdgeInsets.all(isTablet ? 20 : 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D0F20),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.borderGold.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'ᚠ  Daily Omen',
+            style: TextStyle(
+              color: AppColors.textGold.withValues(alpha: 0.7),
+              fontSize: isTablet ? 12 : 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '"${gs.randomQuote}"',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: isTablet ? 15 : 13,
+              fontStyle: FontStyle.italic,
+              height: 1.5,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -540,25 +653,11 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  String _formattedDate() {
-    final now = DateTime.now();
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return '${months[now.month - 1]} ${now.day}';
-  }
-
   String _formatTimeRemaining() {
     final remaining = gs.timeUntilNextDrop;
     final minutes = remaining.inMinutes;
     final seconds = remaining.inSeconds % 60;
     return 'Next rune in ${minutes}m ${seconds}s';
-  }
-
-  String _getGuideMessage() {
-    if (gs.totalRunes == 0) return 'Welcome! Collect your first rune to begin! ✨';
-    if (gs.totalRunes < 5) return 'Great start! Keep collecting runes! 🌟';
-    if (gs.profile.currentStreak >= 3) return 'Amazing streak! You\'re on fire! 🔥';
-    if (gs.completedFloors > 0) return 'Your tower grows stronger! Keep building! 🏰';
-    return 'Your collection grows! Forge some spells! 🪄';
   }
 }
 
