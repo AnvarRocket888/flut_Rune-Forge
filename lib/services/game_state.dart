@@ -531,4 +531,144 @@ class GameState extends ChangeNotifier {
     _save();
     notifyListeners();
   }
+
+  // ── Screenshot / Demo mode ────────────────────────────────
+
+  /// Loads rich fake data so every screen looks like the app
+  /// has been used for weeks. Does NOT persist to storage.
+  void loadDemoState() {
+    final rng = Random();
+    final now = DateTime.now();
+
+    _profile = UserProfile(
+      name: 'Runesmith',
+      xp: 4750,
+      level: 8,
+      energy: 80,
+      currentStreak: 23,
+      bestStreak: 30,
+      lastActiveDate: now,
+      totalRunesCollected: 87,
+      totalSpellsCreated: 14,
+      totalUpgrades: 22,
+      dailyChallengesCompleted: [],
+    );
+
+    // 87 runes spread across days
+    final runeTemplates = [
+      ('Ignis', 'Spark of productivity', RuneElement.fire, RuneRarity.epic, '🔥', 'Double XP for 1 hour'),
+      ('Phoenix', 'Rebirth and renewal', RuneElement.fire, RuneRarity.legendary, '🦅', 'Reset streak without losing XP'),
+      ('Ember', 'Warm glow of motivation', RuneElement.fire, RuneRarity.common, '🌋', 'Increase task completion rate'),
+      ('Blaze', 'Burning determination', RuneElement.fire, RuneRarity.rare, '☀️', 'Double XP for 1 hour'),
+      ('Inferno', 'Unstoppable energy', RuneElement.fire, RuneRarity.epic, '💥', 'Triple streak bonus'),
+      ('Aqua', 'Flow of calm', RuneElement.water, RuneRarity.common, '💧', 'Remind to drink water'),
+      ('Tide', 'Rhythm of life', RuneElement.water, RuneRarity.rare, '🌊', 'Set break reminders'),
+      ('Frost', 'Cool composure', RuneElement.water, RuneRarity.epic, '❄️', 'Calm breathing exercise'),
+      ('Torrent', 'Overwhelming power', RuneElement.water, RuneRarity.legendary, '🏊', 'Full energy recovery'),
+      ('Mist', 'Subtle intuition', RuneElement.water, RuneRarity.common, '🌫️', 'Mood tracking boost'),
+      ('Terra', 'Grounded stability', RuneElement.earth, RuneRarity.common, '🪨', 'Posture reminder'),
+      ('Root', 'Deep connection', RuneElement.earth, RuneRarity.rare, '🌿', 'Nature walk reminder'),
+      ('Crystal', 'Clarity of mind', RuneElement.earth, RuneRarity.epic, '💎', 'Clear mind meditation'),
+      ('Mountain', 'Immovable resolve', RuneElement.earth, RuneRarity.legendary, '⛰️', 'Willpower boost'),
+      ('Seed', 'Growth potential', RuneElement.earth, RuneRarity.common, '🌱', 'Start a new habit'),
+      ('Zephyr', 'Gentle breeze', RuneElement.air, RuneRarity.common, '🍃', 'Deep breathing prompt'),
+      ('Gale', 'Swift action', RuneElement.air, RuneRarity.rare, '💨', 'Speed up current task'),
+      ('Storm', 'Raw power', RuneElement.air, RuneRarity.epic, '⚡', 'Burst of energy'),
+      ('Whisper', 'Quiet wisdom', RuneElement.air, RuneRarity.rare, '🎐', 'Reflection prompt'),
+      ('Cyclone', 'Controlled chaos', RuneElement.air, RuneRarity.legendary, '🌪️', 'Multi-task boost'),
+      ('Aether', 'Pure essence', RuneElement.spirit, RuneRarity.epic, '✨', 'Universal bonus'),
+      ('Luna', 'Moonlit insight', RuneElement.spirit, RuneRarity.rare, '🌙', 'Night routine helper'),
+      ('Sol', 'Solar vitality', RuneElement.spirit, RuneRarity.epic, '☀️', 'Morning routine helper'),
+      ('Nova', 'Explosive potential', RuneElement.spirit, RuneRarity.legendary, '💫', 'Random bonus event'),
+      ('Void', 'Infinite possibility', RuneElement.spirit, RuneRarity.legendary, '🕳️', 'Unlock hidden features'),
+    ];
+
+    _runes = List.generate(87, (i) {
+      final t = runeTemplates[i % runeTemplates.length];
+      return RuneModel(
+        id: 'demo_$i',
+        name: t.$1,
+        description: t.$2,
+        lore: 'Ancient lore of ${t.$1} passed down through generations of runesmiths.',
+        element: t.$3,
+        rarity: t.$4,
+        emoji: t.$5,
+        passiveBonus: t.$6,
+        level: 1 + (i % 5),
+        collectedAt: now.subtract(Duration(days: 60 - i, hours: rng.nextInt(12))),
+        isActive: i % 7 == 0,
+      );
+    });
+
+    _spells = [
+      SpellModel(id: 'demo_s0', name: 'Flame Tide', description: 'Fire meets water in perfect harmony', emoji: '🌊🔥', runeIds: ['demo_0', 'demo_6'], effect: 'Boost focus AND calm simultaneously', createdAt: now.subtract(const Duration(days: 45)), isActive: true),
+      SpellModel(id: 'demo_s1', name: 'Terra Storm', description: 'Earth and air collide', emoji: '⛰️⚡', runeIds: ['demo_10', 'demo_17'], effect: 'Grounded burst of energy', createdAt: now.subtract(const Duration(days: 40)), isActive: true),
+      SpellModel(id: 'demo_s2', name: 'Spirit Blaze', description: 'Spirit energy ignites', emoji: '✨🔥', runeIds: ['demo_20', 'demo_1'], effect: 'XP multiplier for 2 hours', createdAt: now.subtract(const Duration(days: 35)), isActive: false),
+      SpellModel(id: 'demo_s3', name: 'Frost Nova', description: 'Ice and cosmic energy merge', emoji: '❄️💫', runeIds: ['demo_7', 'demo_23'], effect: 'Calm focus mode', createdAt: now.subtract(const Duration(days: 30)), isActive: true),
+      SpellModel(id: 'demo_s4', name: 'Void Tide', description: 'Darkness flows like water', emoji: '🕳️🌊', runeIds: ['demo_24', 'demo_8'], effect: 'Mystery bonus unlocked', createdAt: now.subtract(const Duration(days: 25)), isActive: false),
+      SpellModel(id: 'demo_s5', name: 'Mountain Gale', description: 'Solid as rock, swift as wind', emoji: '⛰️💨', runeIds: ['demo_13', 'demo_16'], effect: 'Productivity double-strike', createdAt: now.subtract(const Duration(days: 20)), isActive: true),
+      SpellModel(id: 'demo_s6', name: 'Solar Root', description: 'Sun energy grounds into earth', emoji: '☀️🌿', runeIds: ['demo_22', 'demo_11'], effect: 'Morning habit boost', createdAt: now.subtract(const Duration(days: 15)), isActive: true),
+      SpellModel(id: 'demo_s7', name: 'Phoenix Storm', description: 'Rebirth through lightning', emoji: '🦅⚡', runeIds: ['demo_1', 'demo_17'], effect: 'Reset and surge', createdAt: now.subtract(const Duration(days: 12)), isActive: false),
+      SpellModel(id: 'demo_s8', name: 'Whisper Flame', description: 'Quiet wisdom burns bright', emoji: '🎐🔥', runeIds: ['demo_18', 'demo_0'], effect: 'Insight mode', createdAt: now.subtract(const Duration(days: 8)), isActive: true),
+      SpellModel(id: 'demo_s9', name: 'Cyclone Crystal', description: 'Spinning clarity of mind', emoji: '🌪️💎', runeIds: ['demo_19', 'demo_12'], effect: 'Hyper-focus mode', createdAt: now.subtract(const Duration(days: 5)), isActive: true),
+      SpellModel(id: 'demo_s10', name: 'Lunar Frost', description: 'Moonlit ice pathway', emoji: '🌙❄️', runeIds: ['demo_21', 'demo_7'], effect: 'Night routine perfected', createdAt: now.subtract(const Duration(days: 4)), isActive: false),
+      SpellModel(id: 'demo_s11', name: 'Inferno Void', description: 'Endless fire in the abyss', emoji: '💥🕳️', runeIds: ['demo_4', 'demo_24'], effect: 'Legendary XP boost', createdAt: now.subtract(const Duration(days: 3)), isActive: true),
+      SpellModel(id: 'demo_s12', name: 'Torrent Seed', description: 'Water nurtures new growth', emoji: '🏊🌱', runeIds: ['demo_8', 'demo_14'], effect: 'Habit-building accelerator', createdAt: now.subtract(const Duration(days: 2)), isActive: true),
+      SpellModel(id: 'demo_s13', name: 'Aether Blaze', description: 'Pure essence on fire', emoji: '✨🌋', runeIds: ['demo_20', 'demo_2'], effect: 'Universal daily boost', createdAt: now.subtract(const Duration(days: 1)), isActive: true),
+    ];
+
+    // Tower — first 7 floors complete, floor 8 in progress
+    final defaultFloors = TowerFloor.defaultFloors();
+    _towerFloors = defaultFloors.map((f) {
+      if (f.floor <= 7) {
+        return f.copyWith(isUnlocked: true, runesPlaced: f.runesRequired);
+      } else if (f.floor == 8) {
+        return f.copyWith(isUnlocked: true, runesPlaced: 16);
+      }
+      return f;
+    }).toList();
+
+    // Achievements — most unlocked
+    final allAch = AchievementModel.defaults();
+    _achievements = allAch.map((a) {
+      final unlocked = [
+        'first_rune', 'rune_collector_10', 'rune_hoarder_50',
+        'all_elements', 'first_spell', 'spell_5',
+        'floor_1', 'floor_5',
+        'streak_3', 'streak_7', 'streak_14',
+        'rare_rune', 'epic_rune', 'legendary_rune',
+        'upgrade_5', 'upgrade_20',
+        'level_5',
+      ].contains(a.id);
+      if (unlocked) {
+        return a.copyWith(
+          current: a.target,
+          isUnlocked: true,
+          unlockedAt: now.subtract(Duration(days: rng.nextInt(50) + 1)),
+        );
+      }
+      // In-progress
+      return a.copyWith(current: (a.target * 0.6).round());
+    }).toList();
+
+    // Trophies — most earned
+    final allTrophies = TrophyModel.defaults();
+    _trophies = allTrophies.map((t) {
+      final earned = [
+        'first_steps', 'fire_starter', 'water_bearer', 'earth_shaker',
+        'wind_walker', 'spirit_seer', 'tower_initiate', 'spell_scholar',
+        'rune_sage',
+      ].contains(t.id);
+      if (earned) {
+        return t.copyWith(
+          isEarned: true,
+          earnedAt: now.subtract(Duration(days: rng.nextInt(50) + 1)),
+        );
+      }
+      return t;
+    }).toList();
+
+    _lastRuneDrop = now.subtract(const Duration(minutes: 15));
+    notifyListeners();
+  }
 }

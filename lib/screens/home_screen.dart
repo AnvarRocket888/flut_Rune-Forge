@@ -657,7 +657,7 @@ class _HomeScreenState extends State<HomeScreen>
     final remaining = gs.timeUntilNextDrop;
     final minutes = remaining.inMinutes;
     final seconds = remaining.inSeconds % 60;
-    return 'Next rune in ${minutes}m ${seconds}s';
+    return 'Next rune in\n${minutes}m ${seconds}s';
   }
 }
 
