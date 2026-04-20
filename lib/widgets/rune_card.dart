@@ -90,33 +90,41 @@ class _RuneCardState extends State<RuneCard>
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Emoji & level badge
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Text(widget.rune.emoji, style: const TextStyle(fontSize: 36)),
-                      if (widget.rune.level > 1)
-                        Positioned(
-                          right: -8,
-                          top: -4,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: AppColors.accent,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'Lv${widget.rune.level}',
-                              style: const TextStyle(
-                                color: AppColors.bgDark,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
+                  // Emoji & level badge — fixed size so badge doesn't shift emoji
+                  Center(
+                    child: SizedBox(
+                      width: 52,
+                      height: 44,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          Text(widget.rune.emoji, style: const TextStyle(fontSize: 36)),
+                          if (widget.rune.level > 1)
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: AppColors.accent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'Lv${widget.rune.level}',
+                                  style: const TextStyle(
+                                    color: AppColors.bgDark,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -138,6 +146,7 @@ class _RuneCardState extends State<RuneCard>
                         color: AppColors.textHint,
                         fontSize: 10,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 2),
                     Container(
