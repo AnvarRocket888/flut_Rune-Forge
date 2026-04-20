@@ -15,7 +15,7 @@ const bool kScreenshotMode = false;
 /// Set to [true] to launch the automated promo video tour (~63 s).
 /// Each screen appears with demo data and smoothly transitions
 /// to the next — just hit record before launching.
-const bool kVideoTourMode = true;
+const bool kVideoTourMode = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
