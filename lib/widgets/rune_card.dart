@@ -89,82 +89,78 @@ class _RuneCardState extends State<RuneCard>
                 ],
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Emoji & level badge — fixed size so badge doesn't shift emoji
-                  Center(
-                    child: SizedBox(
-                      width: 52,
-                      height: 44,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
+                  // Level at top center
+                  if (widget.rune.level > 1)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Lv${widget.rune.level}',
+                        style: const TextStyle(
+                          color: AppColors.bgDark,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(height: 16),
+                  // Main content — centered vertically in remaining space
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(widget.rune.emoji, style: const TextStyle(fontSize: 36)),
-                          if (widget.rune.level > 1)
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                                decoration: BoxDecoration(
-                                  color: AppColors.accent,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  'Lv${widget.rune.level}',
-                                  style: const TextStyle(
-                                    color: AppColors.bgDark,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          const SizedBox(height: 6),
+                          Text(
+                            widget.rune.name,
+                            style: TextStyle(
+                              color: _rarityColor,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (widget.showDetails) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.rune.elementLabel,
+                              style: const TextStyle(
+                                color: AppColors.textHint,
+                                fontSize: 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 2),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: _rarityColor.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                widget.rune.rarityLabel,
+                                style: TextStyle(
+                                  color: _rarityColor,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
+                          ],
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    widget.rune.name,
-                    style: TextStyle(
-                      color: _rarityColor,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (widget.showDetails) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      widget.rune.elementLabel,
-                      style: const TextStyle(
-                        color: AppColors.textHint,
-                        fontSize: 10,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 2),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: _rarityColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        widget.rune.rarityLabel,
-                        style: TextStyle(
-                          color: _rarityColor,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             );
