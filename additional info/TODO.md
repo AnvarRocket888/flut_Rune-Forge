@@ -1,4 +1,4 @@
-# TODO — Rune Forge
+# TODO — OveRune Forging
 
 ## Future Integrations
 
@@ -29,46 +29,6 @@
 - [ ] Streak at risk notifications
 - [ ] Energy fully recovered notifications
 - [ ] Achievement unlocked notifications
-
-### Photo Confirmation (Rare Runes)
-- [ ] Integrate camera access
-- [ ] Add image classification model (on-device)
-- [ ] Map natural object shapes to rune types
-- [ ] Add photo gallery for captured objects
-- [ ] Privacy policy update for camera usage
-
-### Online Features (Future)
-- [ ] Cloud sync with Firebase/Supabase
-- [ ] Leaderboards
-- [ ] Friend system
-- [ ] Rune trading
-- [ ] Global events / challenges
-
-### Widget (iOS)
-- [ ] Home screen widget showing current runes
-- [ ] Lock screen widget for daily streak
-- [ ] Tower progress widget
-
-### Color Scheme
-- [ ] Replace placeholder colors in `app_colors.dart` with final scheme
-- [ ] Update `additional info/color_scheme.css` with final colors
-- [ ] Test all screens with new colors
-
-### Localization
-- [ ] All UI text is in English (done)
-- [ ] Prepare for future localization (l10n setup)
-- [ ] Extract all strings to ARB files
-
-### Accessibility
-- [ ] VoiceOver labels for all interactive elements
-- [ ] Dynamic type support
-- [ ] Reduced motion support
-
-### Performance
-- [ ] Profile animations on older devices
-- [ ] Optimize particle systems
-- [ ] Lazy load rune images/icons
-- [ ] Database optimization for large rune collections
 
 ### App Store
 - [ ] App Store screenshots

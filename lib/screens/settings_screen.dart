@@ -15,7 +15,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _nameController;
-  bool _notificationsEnabled = false;
   bool _soundEnabled = true;
   bool _hapticsEnabled = true;
 
@@ -122,22 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   children: [
                     _toggleRow(
-                      '🔔 Push Notifications',
-                      'Get reminders for daily rune collection',
-                      _notificationsEnabled,
-                      (val) {
-                        setState(() => _notificationsEnabled = val);
-                        AnalyticsStub.settingsChanged('notifications', val.toString());
-                        // TODO: Implement push notifications
-                      },
-                      isTablet,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Container(height: 0.5, color: AppColors.border),
-                    ),
-                    _toggleRow(
-                      '🔊 Sound Effects',
+                      ' Sound Effects',
                       'Play sounds for actions',
                       _soundEnabled,
                       (val) {
