@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import '../core/app_colors.dart';
 import '../models/rune_model.dart';
 import '../services/game_state.dart';
+import '../services/feedback_service.dart';
 import '../widgets/animated_background.dart';
 
 class RuneDetailScreen extends StatefulWidget {
@@ -46,6 +47,7 @@ class _RuneDetailScreenState extends State<RuneDetailScreen>
 
   void _upgradeRune() {
     if (widget.gameState.upgradeRune(_rune.id)) {
+      FeedbackService.impact();
       final idx = widget.gameState.runes.indexWhere((r) => r.id == _rune.id);
       if (idx != -1) {
         setState(() => _rune = widget.gameState.runes[idx]);

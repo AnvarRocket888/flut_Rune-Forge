@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import '../core/app_colors.dart';
 import '../core/analytics_stub.dart';
 import '../services/game_state.dart';
+import '../services/feedback_service.dart';
 import '../widgets/animated_background.dart';
 import 'privacy_policy_screen.dart';
 
@@ -25,6 +26,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     AnalyticsStub.screenView('settings');
     _nameController = TextEditingController(text: gs.profile.name);
+    _soundEnabled = FeedbackService.soundEnabled;
+    _hapticsEnabled = FeedbackService.hapticsEnabled;
   }
 
   @override
@@ -126,6 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _soundEnabled,
                       (val) {
                         setState(() => _soundEnabled = val);
+                        FeedbackService.setSoundEnabled(val);
                         AnalyticsStub.settingsChanged('sound', val.toString());
                       },
                       isTablet,
@@ -140,6 +144,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _hapticsEnabled,
                       (val) {
                         setState(() => _hapticsEnabled = val);
+                        FeedbackService.setHapticsEnabled(val);
+                        if (val) FeedbackService.hapticMedium();
                         AnalyticsStub.settingsChanged('haptics', val.toString());
                       },
                       isTablet,

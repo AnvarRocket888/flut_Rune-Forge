@@ -4,6 +4,7 @@ import '../core/analytics_stub.dart';
 import '../models/rune_model.dart';
 import '../models/spell_model.dart';
 import '../services/game_state.dart';
+import '../services/feedback_service.dart';
 import '../widgets/animated_background.dart';
 import '../widgets/glowing_card.dart';
 import '../widgets/animated_emoji.dart';
@@ -61,6 +62,7 @@ class _ForgeScreenState extends State<ForgeScreen>
     final selectedRunes = gs.runes.where((r) => _selectedRuneIds.contains(r.id)).toList();
     if (selectedRunes.length < 2) return;
 
+    FeedbackService.impact();
     setState(() => _isForging = true);
     _forgeAnimController.forward().then((_) {
       final spell = gs.forgeSpell(selectedRunes);

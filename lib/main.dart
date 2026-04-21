@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'services/storage_service.dart';
+import 'services/feedback_service.dart';
 import 'services/game_state.dart';
 import 'screens/welcome_screen.dart';
 import 'app.dart';
@@ -7,6 +8,7 @@ import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await StorageService.init();
+  FeedbackService.init();
 
   final gameState = GameState();
   await gameState.loadState();
