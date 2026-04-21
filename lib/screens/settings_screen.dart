@@ -3,6 +3,7 @@ import '../core/app_colors.dart';
 import '../core/analytics_stub.dart';
 import '../services/game_state.dart';
 import '../widgets/animated_background.dart';
+import 'privacy_policy_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final GameState gameState;
@@ -205,6 +206,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     _infoRow('⭐ Total XP', '${gs.profile.xp}', isTablet),
                   ],
+                ),
+              ),
+            ),
+
+            // Legal section
+            _sectionHeader('Legal', isTablet),
+            SliverToBoxAdapter(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: isTablet ? 40 : 16, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.bgCard,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: CupertinoButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.accent.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          CupertinoIcons.shield_lefthalf_fill,
+                          color: AppColors.accent,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Privacy Policy',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: isTablet ? 16 : 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        CupertinoIcons.chevron_right,
+                        color: AppColors.textHint,
+                        size: 16,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
