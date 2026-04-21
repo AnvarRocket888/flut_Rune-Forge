@@ -2,11 +2,11 @@
 # Измените значения ниже перед запуском make setup
 
 # Название приложения (отображается на экране устройства)
-app_name: "Rune Forge"
+app_name: "OveRune Forging"
 
 # Bundle ID приложения (уникальный идентификатор в App Store)
 # Формат: com.company.appname
-bundle_id: "com.runeforge.app"
+bundle_id: "com.ashleyswear.runeforge"
 
 # Путь к иконке приложения (1024x1024 PNG файл)
 # Можно использовать абсолютный или относительный путь
