@@ -23,13 +23,6 @@
   - `settings_changed` — any settings modification
   - `profile_updated` — name/avatar changed
 
-### Push Notifications
-- [ ] Add local notification support for rune drops
-- [ ] Daily reminder notifications
-- [ ] Streak at risk notifications
-- [ ] Energy fully recovered notifications
-- [ ] Achievement unlocked notifications
-
 ### App Store
 - [ ] App Store screenshots
 - [ ] App Store description
