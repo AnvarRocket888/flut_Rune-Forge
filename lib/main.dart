@@ -3,7 +3,15 @@ import 'services/storage_service.dart';
 import 'services/feedback_service.dart';
 import 'services/game_state.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/screenshot_slideshow.dart';
+import 'screens/video_tour_screen.dart';
 import 'app.dart';
+
+// ── Dev flags ─────────────────────────────────────────────
+// Set ONE to true to enter the corresponding capture mode.
+// Both must be false for the normal release build.
+const bool kScreenshotMode = false;
+const bool kVideoTourMode = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +19,13 @@ void main() async {
   FeedbackService.init();
 
   final gameState = GameState();
-  await gameState.loadState();
+
+  if (kScreenshotMode || kVideoTourMode) {
+    // Demo mode: skip persistence, load rich fake data
+    gameState.loadDemoState();
+  } else {
+    await gameState.loadState();
+  }
 
   runApp(RuneForgeBootstrap(gameState: gameState));
 }
@@ -30,6 +44,25 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
 
   @override
   Widget build(BuildContext context) {
+    // ── Screenshot mode ──────────────────────────────────
+    if (kScreenshotMode) {
+      return CupertinoApp(
+        title: 'Rune Forge',
+        debugShowCheckedModeBanner: false,
+        home: ScreenshotSlideshow(gameState: widget.gameState),
+      );
+    }
+
+    // ── Video tour mode ──────────────────────────────────
+    if (kVideoTourMode) {
+      return CupertinoApp(
+        title: 'Rune Forge',
+        debugShowCheckedModeBanner: false,
+        home: VideoTourScreen(gameState: widget.gameState),
+      );
+    }
+
+    // ── Normal mode ──────────────────────────────────────
     if (_showWelcome) {
       return CupertinoApp(
         title: 'Rune Forge',
