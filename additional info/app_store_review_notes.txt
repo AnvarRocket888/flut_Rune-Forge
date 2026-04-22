@@ -1,0 +1,2 @@
+The app does not require any account creation, Apple ID sign-in, or network connectivity. All features are fully accessible offline from the first launch.
+The app is free with no paywalls, no subscriptions, and no consumable purchases of any kind.

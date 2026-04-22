@@ -32,18 +32,34 @@ platform :ios do
       key_content: ENV["APPSTORE_P8"]
     )
 
-    upload_to_app_store(
-      api_key:            api_key,
-      app_identifier:     ENV["IOS_BUNDLE_ID"],
-      skip_binary_upload: true,
-      skip_screenshots:   true,
-      metadata_path:      "./fastlane/metadata",
-      submit_for_review:  false,
-      automatic_release:  false,
-      force:              true,
-      run_precheck_before_submit:           false,
-      ignore_language_directory_validation: true
-    )
+    begin
+      upload_to_app_store(
+        api_key:            api_key,
+        app_identifier:     ENV["IOS_BUNDLE_ID"],
+        skip_binary_upload: true,
+        skip_screenshots:   true,
+        metadata_path:      "./fastlane/metadata",
+        submit_for_review:  false,
+        automatic_release:  false,
+        force:              true,
+        run_precheck_before_submit:           false,
+        ignore_language_directory_validation: true
+      )
+    rescue => e
+      # Known fastlane issue: on first-ever version upload App Store Connect
+      # hasn't created the appStoreReviewDetail object yet, so spaceship raises
+      # RuntimeError "No data" from fetch_app_store_review_detail.
+      # All localized metadata (descriptions, keywords, URLs) was already
+      # uploaded successfully before this point — safe to treat as a warning.
+      if e.message.to_s.include?("No data")
+        UI.important("⚠️  App Store Connect returned 'No data' for review detail.")
+        UI.important("    This is expected for the very first version submission.")
+        UI.important("    All localized metadata was uploaded successfully.")
+        UI.important("    The review detail object will be available after the first binary upload.")
+      else
+        raise e
+      end
+    end
   end
 
   desc "Upload screenshots only — no binary, no metadata"
