@@ -5,6 +5,7 @@ import 'services/game_state.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/screenshot_slideshow.dart';
 import 'screens/video_tour_screen.dart';
+import 'core/app_theme.dart';
 import 'app.dart';
 
 // ── Dev flags ─────────────────────────────────────────────
@@ -48,6 +49,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     if (kScreenshotMode) {
       return CupertinoApp(
         title: 'Rune Forge',
+        theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: ScreenshotSlideshow(gameState: widget.gameState),
       );
@@ -57,6 +59,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     if (kVideoTourMode) {
       return CupertinoApp(
         title: 'Rune Forge',
+        theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: VideoTourScreen(gameState: widget.gameState),
       );
@@ -66,6 +69,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     if (_showWelcome) {
       return CupertinoApp(
         title: 'Rune Forge',
+        theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: WelcomeScreen(
           onDismiss: () {
