@@ -15,7 +15,7 @@ class RuneForgeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      title: 'Rune Forge',
+      title: 'OveRune Forging',
       theme: AppTheme.dark,
       debugShowCheckedModeBanner: false,
       home: MainTabScaffold(gameState: gameState),

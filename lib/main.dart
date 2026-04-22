@@ -48,7 +48,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     // ── Screenshot mode ──────────────────────────────────
     if (kScreenshotMode) {
       return CupertinoApp(
-        title: 'Rune Forge',
+        title: 'OveRune Forging',
         theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: ScreenshotSlideshow(gameState: widget.gameState),
@@ -58,7 +58,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     // ── Video tour mode ──────────────────────────────────
     if (kVideoTourMode) {
       return CupertinoApp(
-        title: 'Rune Forge',
+        title: 'OveRune Forging',
         theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: VideoTourScreen(gameState: widget.gameState),
@@ -68,7 +68,7 @@ class _RuneForgeBootstrapState extends State<RuneForgeBootstrap> {
     // ── Normal mode ──────────────────────────────────────
     if (_showWelcome) {
       return CupertinoApp(
-        title: 'Rune Forge',
+        title: 'OveRune Forging',
         theme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
         home: WelcomeScreen(

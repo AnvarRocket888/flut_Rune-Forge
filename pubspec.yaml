@@ -1,5 +1,5 @@
 name: rune_forge
-description: "A new Flutter project."
+description: "OveRune Forging — collect runes, forge spells, and build your tower."
 publish_to: 'none'
 version: 1.0.0+1
 environment:

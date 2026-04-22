@@ -1,7 +1,7 @@
 class AppConstants {
   AppConstants._();
 
-  static const String appName = 'Rune Forge';
+  static const String appName = 'OveRune Forging';
   static const String appTagline = 'Forge Your Destiny, One Rune at a Time';
 
   // Timing
