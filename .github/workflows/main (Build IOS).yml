@@ -185,6 +185,7 @@ jobs:
           APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           # Provide raw .p8 content to Fastlane lanes that expect APPSTORE_P8 (some lanes use :key_content)
           APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
+          FORCE_CI_BUILD_NUMBER: 'true'
         run: |
           eval "$(ssh-agent -s)"
           echo "$MATCH_DEPLOY_KEY" | tr -d '\r' | ssh-add -
