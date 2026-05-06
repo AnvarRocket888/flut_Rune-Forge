@@ -42,9 +42,9 @@ platform :ios do
 desc "Sync codesigning certificates for Build"
   lane :sync_certificates_for_build do
     api_key = app_store_connect_api_key(
-      key_id: ENV["APPSTORE_KEY_ID"],
-      issuer_id: ENV["APPSTORE_ISSUER_ID"],
-      key_filepath: ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+      key_id:      ENV["APPSTORE_KEY_ID"],
+      issuer_id:   ENV["APPSTORE_ISSUER_ID"],
+      key_content: ENV["APPSTORE_P8"]
     )
 
     main_app_bundle_id = ENV["IOS_BUNDLE_ID"]
