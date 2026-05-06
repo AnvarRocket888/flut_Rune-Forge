@@ -18,6 +18,11 @@ name: 📝 Upload App Store Metadata
 
 on:
   workflow_dispatch:
+    inputs:
+      app_version:
+        description: 'App Store version to target (e.g. 2.0)'
+        required: false
+        default: '2.0'
 
 jobs:
   upload-metadata:
@@ -134,7 +139,47 @@ jobs:
           PYEOF
 
       # ───────────────────────────────────────────────
-      # 5. Загружаем метаданные через Fastlane deliver.
+      # 5. Копируем What's New во все локали как
+      #    release_notes.txt.
+      #    Источник: whats_new/gr/<locale>.txt и
+      #              whats_new/wh/<locale>.txt
+      #    Локали, для которых нет файла — пропускаем.
+      # ───────────────────────────────────────────────
+      - name: 🆕 Build Fastlane metadata structure (What's New)
+        run: |
+          python3 << 'PYEOF'
+          import os, shutil
+
+          META = "fastlane/metadata"
+
+          sources = [
+              ("whats_new/gr", "gr"),
+              ("whats_new/wh", "wh"),
+          ]
+
+          ok, missing = 0, []
+          for folder, label in sources:
+              if not os.path.isdir(folder):
+                  print(f"  ⚠️  folder not found: {folder}")
+                  continue
+              for fname in sorted(os.listdir(folder)):
+                  if not fname.endswith(".txt"):
+                      continue
+                  locale = fname[:-4]
+                  src    = os.path.join(folder, fname)
+                  dst    = os.path.join(META, locale)
+                  if not os.path.isdir(dst):
+                      print(f"  ⚠️  no metadata folder for locale: {locale}, skipping")
+                      continue
+                  shutil.copy(src, os.path.join(dst, "release_notes.txt"))
+                  print(f"  ✅  [{label}] {locale:12s}  ←  {src}")
+                  ok += 1
+
+          print(f"\nDone: {ok} release_notes files written.")
+          PYEOF
+
+      # ───────────────────────────────────────────────
+      # 6. Загружаем метаданные через Fastlane deliver.
       #    Бинарный файл НЕ загружается (skip_binary_upload).
       #    Скриншоты НЕ трогаются (skip_screenshots).
       # ───────────────────────────────────────────────
@@ -145,3 +190,4 @@ jobs:
           APPSTORE_KEY_ID:    ${{ secrets.APPSTORE_KEY_ID }}
           APPSTORE_P8:        ${{ secrets.APPSTORE_P8 }}
           IOS_BUNDLE_ID:      ${{ secrets.IOS_BUNDLE_ID }}
+          APP_VERSION:        ${{ inputs.app_version }}

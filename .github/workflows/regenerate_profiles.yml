@@ -1,0 +1,74 @@
+name: Regenerate iOS Profiles
+
+on:
+  workflow_dispatch:
+
+jobs:
+  regenerate-profiles:
+    name: Regenerate Provisioning Profiles
+    runs-on: macos-latest
+
+    steps:
+      ###########################
+      #        Checkout         #
+      ###########################
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      ###########################
+      #      Setup Ruby         #
+      ###########################
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      ###########################
+      #   Setup SSH for Match   #
+      ###########################
+      - name: Setup SSH for Match repository
+        env:
+          MATCH_DEPLOY_KEY: ${{ secrets.MATCH_DEPLOY_KEY }}
+        run: |
+          mkdir -p $HOME/.ssh
+          echo "$MATCH_DEPLOY_KEY" > $HOME/.ssh/match_deploy_key
+          chmod 600 $HOME/.ssh/match_deploy_key
+          ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+          git config --global core.sshCommand "ssh -i $HOME/.ssh/match_deploy_key -o IdentitiesOnly=yes"
+
+      ###########################
+      #  Install Fastlane       #
+      ###########################
+      - name: Install Fastlane dependencies
+        run: bundle install
+
+      ###########################
+      #  Regenerate Profiles    #
+      ###########################
+      - name: Regenerate provisioning profiles with Fastlane Match
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_DEPLOY_KEY: ${{ secrets.MATCH_DEPLOY_KEY }}
+          MATCH_REPOSITORY: ${{ secrets.MATCH_REPOSITORY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          APPLE_CONNECT_EMAIL: ${{ secrets.APPLE_CONNECT_EMAIL }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          IOS_BUNDLE_ID: ${{ secrets.IOS_BUNDLE_ID }}
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          eval "$(ssh-agent -s)"
+          echo "$MATCH_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+          bundle exec fastlane ios sync_certificates_for_build
+
+      ###########################
+      #       Cleanup           #
+      ###########################
+      - name: Clean up
+        if: always()
+        run: |
+          rm -rf $HOME/.ssh/match_deploy_key || true
+          rm -rf $HOME/private_keys || true

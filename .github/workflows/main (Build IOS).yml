@@ -16,6 +16,14 @@ jobs:
       ###########################
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      ###########################
+      #     Setup Xcode 26      #
+      ###########################
+      - name: Set up Xcode 26
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.0'
       
       ###########################
       #      Setup Ruby         #
@@ -185,7 +193,6 @@ jobs:
           APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
           # Provide raw .p8 content to Fastlane lanes that expect APPSTORE_P8 (some lanes use :key_content)
           APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
-          FORCE_CI_BUILD_NUMBER: 'true'
         run: |
           eval "$(ssh-agent -s)"
           echo "$MATCH_DEPLOY_KEY" | tr -d '\r' | ssh-add -

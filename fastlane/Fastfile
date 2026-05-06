@@ -1,9 +1,9 @@
 # Fastfile for Flutter iOS CI/CD
 
+import "AppstoreLanes.rb"
+
 org, repo = (ENV["GITHUB_REPOSITORY"]||"").split("/")
 match_org, match_repo = (ENV["MATCH_REPOSITORY"]||"").split("/")
-
-import "AppstoreLanes.rb"
 
 platform :ios do
   
@@ -77,7 +77,7 @@ desc "Sync codesigning certificates for Build"
       code_sign_identity: "Apple Distribution"
     )
     
-    # # Configure manual code signing for notification extension
+    # Configure manual code signing for notification extension
     update_code_signing_settings(
       use_automatic_signing: false,
       path: "ios/Runner.xcodeproj",
@@ -93,7 +93,7 @@ desc "Sync codesigning certificates for Build"
     
     # Get provisioning profile names from Match
     main_profile = ENV["sigh_#{ENV['IOS_BUNDLE_ID']}_appstore_profile-name"]
-    # extension_profile = ENV["sigh_#{ENV['IOS_BUNDLE_ID']}.notifications_appstore_profile-name"]
+    extension_profile = ENV["sigh_#{ENV['IOS_BUNDLE_ID']}.notifications_appstore_profile-name"]
     
     # Read, update and write ExportOptions.plist
     require 'plist'
@@ -115,8 +115,8 @@ desc "Sync codesigning certificates for Build"
 
     # Populate provisioningProfiles mapping
     export_options['provisioningProfiles'] = {
-      ENV['IOS_BUNDLE_ID'] => main_profile
-      # "#{ENV['IOS_BUNDLE_ID']}.notifications" => extension_profile
+      ENV['IOS_BUNDLE_ID'] => main_profile,
+      "#{ENV['IOS_BUNDLE_ID']}.notifications" => extension_profile
     }
 
     File.write(export_options_path, export_options.to_plist)
@@ -126,16 +126,9 @@ desc "Sync codesigning certificates for Build"
     # If you *really* want to use the CI-provided BUILD_NUMBER (e.g. github.run_number),
     # set ENV['FORCE_CI_BUILD_NUMBER']='true' in the workflow.
     build_number_env = ENV['BUILD_NUMBER']
-    if ENV['FORCE_CI_BUILD_NUMBER'] == 'true' && build_number_env && build_number_env.to_i > 0
+    UI.user_error!("BUILD_NUMBER is not set. Pass BUILD_NUMBER=${{ github.run_number }} from the workflow.") unless build_number_env && build_number_env.to_i > 0
       safe_build_number = build_number_env
-      UI.message("Using CI-provided BUILD_NUMBER: #{safe_build_number} (FORCE_CI_BUILD_NUMBER=true)")
-    else
-      safe_build_number = Time.now.to_i.to_s
-      if build_number_env && build_number_env.to_i > 0
-        UI.message("Ignoring CI BUILD_NUMBER=#{build_number_env} in favor of timestamp to avoid duplicate uploads. To force CI BUILD_NUMBER set FORCE_CI_BUILD_NUMBER=true")
-      end
-      UI.message("Using timestamp build number: #{safe_build_number}")
-    end
+    UI.message("Using GitHub run number as build number: #{safe_build_number}")
 
     # Build Flutter IPA with the chosen build number
     # Ensure iOS Info.plist CFBundleVersion is updated so App Store sees the new build number
@@ -153,8 +146,8 @@ desc "Sync codesigning certificates for Build"
     rescue => ex
       UI.message("Failed to update Info.plist: #{ex.message}")
     end
-  symbols_file = File.expand_path("../build/app.ios.symbols", __dir__)
-  sh("flutter build ipa --release --obfuscate --split-debug-info=#{File.dirname(symbols_file)} --export-options-plist=#{export_options_path} --build-number=#{safe_build_number} --no-tree-shake-icons")
+    
+  sh("flutter build ipa --release --export-options-plist=#{export_options_path} --build-number=#{safe_build_number} --no-tree-shake-icons")
     
     # Find the built IPA file with absolute path
     ipa_path = Dir.glob(File.expand_path("../build/ios/ipa/*.ipa", __dir__)).first

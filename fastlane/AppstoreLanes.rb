@@ -32,34 +32,19 @@ platform :ios do
       key_content: ENV["APPSTORE_P8"]
     )
 
-    begin
-      upload_to_app_store(
-        api_key:            api_key,
-        app_identifier:     ENV["IOS_BUNDLE_ID"],
-        skip_binary_upload: true,
-        skip_screenshots:   true,
-        metadata_path:      "./fastlane/metadata",
-        submit_for_review:  false,
-        automatic_release:  false,
-        force:              true,
-        run_precheck_before_submit:           false,
-        ignore_language_directory_validation: true
-      )
-    rescue => e
-      # Known fastlane issue: on first-ever version upload App Store Connect
-      # hasn't created the appStoreReviewDetail object yet, so spaceship raises
-      # RuntimeError "No data" from fetch_app_store_review_detail.
-      # All localized metadata (descriptions, keywords, URLs) was already
-      # uploaded successfully before this point — safe to treat as a warning.
-      if e.message.to_s.include?("No data")
-        UI.important("⚠️  App Store Connect returned 'No data' for review detail.")
-        UI.important("    This is expected for the very first version submission.")
-        UI.important("    All localized metadata was uploaded successfully.")
-        UI.important("    The review detail object will be available after the first binary upload.")
-      else
-        raise e
-      end
-    end
+    upload_to_app_store(
+      api_key:            api_key,
+      app_identifier:     ENV["IOS_BUNDLE_ID"],
+      app_version:        ENV["APP_VERSION"],
+      skip_binary_upload: true,
+      skip_screenshots:   true,
+      metadata_path:      "./fastlane/metadata",
+      submit_for_review:  false,
+      automatic_release:  false,
+      force:              true,
+      run_precheck_before_submit:           false,
+      ignore_language_directory_validation: true
+    )
   end
 
   desc "Upload screenshots only — no binary, no metadata"
@@ -86,11 +71,13 @@ platform :ios do
       upload_to_app_store(
         api_key:               api_key,
         app_identifier:        ENV["IOS_BUNDLE_ID"],
+        app_version:           ENV["APP_VERSION"],
         skip_binary_upload:    true,
         skip_metadata:         true,
         skip_screenshots:      false,
         screenshots_path:      ss_path,
         overwrite_screenshots: true,
+        upload_previews:       false,
         submit_for_review:     false,
         force:                 true,
         run_precheck_before_submit:           false,
@@ -116,7 +103,7 @@ platform :ios do
 
     UI.message("")
     UI.message("┌─────────────────────────────────────────────┐")
-    UI.message("│          📊  Upload Statistics              │")
+    UI.message("│      📸  Screenshot Upload Statistics       │")
     UI.message("├─────────────────────────────────────────────┤")
     UI.message("│  Expected                                   │")
     UI.message("│    📱 iPhone : #{expected_iphone.to_s.ljust(28)}│")
