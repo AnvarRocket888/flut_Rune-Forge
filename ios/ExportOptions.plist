@@ -18,6 +18,8 @@
     <dict>
         <key>com.ashleyswear.runeforge</key>
         <string>OveRune Forging</string>
+        <key>com.ashleyswear.runeforge.notifications</key>
+        <string>OveRune Forging Not</string>
     </dict>
 </dict>
 </plist>
