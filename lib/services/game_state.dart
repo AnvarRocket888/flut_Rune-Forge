@@ -82,6 +82,38 @@ class GameState extends ChangeNotifier {
       '"Runes are whispers of power waiting to be heard."',
       '"Patience builds towers; haste crumbles them."',
       '"A runesmith\'s greatest tool is persistence."',
+      '"The fire that tempers steel also lights the way."',
+      '"Power not yet mastered is still power." — Elder Scroll',
+      '"To carve a rune is to carve your will into the world."',
+      '"The forge does not judge — it only reveals."',
+      '"A single rune, placed with intent, can move mountains."',
+      '"Wisdom is the rarest rune of all."',
+      '"Do not rush the forge. Rushed steel shatters."',
+      '"Every failure in the forge is a lesson etched in iron."',
+      '"The strongest spells are born from silence and patience."',
+      '"Your tower is a monument to every attempt you refused to abandon."',
+      '"Ancient runes carry the voices of those who dared first."',
+      '"Let the omen guide your hand, not your fear."',
+      '"The sky is not the ceiling — it is the floor of heaven."',
+      '"Even frost has fire in its heart, if you look close enough."',
+      '"There is no unworthy rune. Only unready hands."',
+      '"The night sky is filled with runes no one has yet learned to read."',
+      '"Iron bends before it breaks — so must the spirit."',
+      '"A master runesmith forged their first rune in darkness."',
+      '"The tower does not sway with the wind — it learns from it."',
+      '"Time is the most powerful rune. Spend it wisely."',
+      '"Light seeks the crack in the armor — and so does growth."',
+      '"What you name with a rune, you begin to summon."',
+      '"The loudest thunder leaves the clearest sky."',
+      '"Seek the rune you fear most — there lies your greatest power."',
+      '"Every layer of the tower is a promise kept to yourself."',
+      '"The forge remembers every hand that has shaped it."',
+      '"To know one rune deeply is worth more than a dozen known lightly."',
+      '"Stars are ancient runes — written before the first runesmith drew breath."',
+      '"Walk slowly through the forge. The best work cannot be hurried."',
+      '"The coldest stone holds the hottest fire inside it."',
+      '"What you build today becomes the foundation of who you are tomorrow."',
+      '"Silence between the runes is where their meaning lives."',
     ];
     return quotes;
   }
@@ -263,6 +295,22 @@ class GameState extends ChangeNotifier {
   void updateName(String name) {
     _profile = _profile.copyWith(name: name);
     AnalyticsStub.profileUpdated();
+    _save();
+    notifyListeners();
+  }
+
+  void updateAvatar(String? path) {
+    _profile = path == null
+        ? _profile.copyWith(clearAvatarPath: true)
+        : _profile.copyWith(avatarPath: path);
+    _save();
+    notifyListeners();
+  }
+
+  void updateWisdomRecording(String? path) {
+    _profile = path == null
+        ? _profile.copyWith(clearWisdomRecordingPath: true)
+        : _profile.copyWith(wisdomRecordingPath: path);
     _save();
     notifyListeners();
   }

@@ -38,11 +38,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allows camera access.</string>
+	<string>to take a profile photo</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allows microphone access.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allows photo library access.</string>
+	<string>to choose a photo from the gallery</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

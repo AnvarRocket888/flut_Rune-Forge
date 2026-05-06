@@ -1,2 +1,17 @@
 The app does not require any account creation, Apple ID sign-in, or network connectivity. All features are fully accessible offline from the first launch.
 The app is free with no paywalls, no subscriptions, and no consumable purchases of any kind.
+
+--- Update Notes ---
+
+This update introduces the following user-facing improvements to the Profile screen:
+
+1. Custom Avatar
+   Users can now tap their profile avatar to take a new photo using the device camera or choose an existing photo from the photo library. The chosen photo is saved locally on the device and displayed as the profile avatar. Users can also remove their custom photo at any time, which reverts to the default emoji avatar. The app uses the device camera and photo library solely for this purpose — no images are uploaded or shared.
+
+2. Editable Name
+   Users can now tap their display name directly on the Profile screen to edit it inline. A text field appears with the current name pre-filled; tapping the checkmark saves the new name immediately.
+
+3. Personal Wisdom — Voice Recording
+   A new "Personal Wisdom" section has been added to the Profile screen. Users can record a personal voice message or mantra using the device microphone. The recording is saved locally on the device. After recording, users can play back the recording at any time directly from the Profile screen, or delete it. The microphone is used exclusively for this in-app recording feature — no audio is transmitted or shared.
+
+All recorded data (photo and audio) is stored exclusively in the app's local document directory and is never uploaded or shared with any third party.

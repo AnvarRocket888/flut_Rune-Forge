@@ -163,6 +163,7 @@
 				6310E91DBCF863E2A7A79EF8 /* UserNotifications.framework */,
 				1D30C1C9BAD2FD1A1D046338 /* FirebaseCore.framework */,
 				3E54605EB62487C966D70368 /* FirebaseMessaging.framework */,
+				BFB404C52B10D93F04059850 /* FirebaseCore.framework */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -232,7 +233,6 @@
 				A736E994BC104DA3F8C6E8C7 /* Pods-notifications.release.xcconfig */,
 				FE396B8E2C42143441C257E3 /* Pods-notifications.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};

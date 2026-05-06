@@ -1,6 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
-import 'package:rune_forge/clear_app.dart';
 import 'package:rune_forge/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +13,7 @@ void main() async {
   await SdkInitializer.loadRuntimeStorageToDevice();
   var isFirstStart = !SdkInitializer.hasValue("isFirstStart");
   var isOrganic = SdkInitializer.getValue("Organic");
-  // if (isFirstStart) SdkInitializer.initAppsFlyer();
+  if (isFirstStart) SdkInitializer.initAppsFlyer();
 
   runApp(
     const App(),
@@ -29,7 +27,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoApp(
       debugShowCheckedModeBanner: false,
-      home: ClearApp(),
+      home: SplashScreen(),
     );
   }
 }

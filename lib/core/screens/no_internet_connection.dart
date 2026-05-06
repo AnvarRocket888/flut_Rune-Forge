@@ -23,7 +23,7 @@ class NoInternetConnectionScreen extends StatelessWidget {
       print('ShowIfNoInternet');
     }
     Navigator.pushAndRemoveUntil(
-      context!,
+      context,
       MaterialPageRoute(
         builder: (context) => const NoInternetConnectionScreen(),
         fullscreenDialog: true,

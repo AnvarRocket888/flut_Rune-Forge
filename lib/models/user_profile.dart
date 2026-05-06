@@ -12,6 +12,8 @@ class UserProfile {
   final int totalSpellsCreated;
   final int totalUpgrades;
   final List<String> dailyChallengesCompleted;
+  final String? avatarPath;
+  final String? wisdomRecordingPath;
 
   const UserProfile({
     this.name = 'Runesmith',
@@ -25,6 +27,8 @@ class UserProfile {
     this.totalSpellsCreated = 0,
     this.totalUpgrades = 0,
     this.dailyChallengesCompleted = const [],
+    this.avatarPath,
+    this.wisdomRecordingPath,
   });
 
   int get xpForCurrentLevel => level * 100;
@@ -52,6 +56,10 @@ class UserProfile {
     int? totalSpellsCreated,
     int? totalUpgrades,
     List<String>? dailyChallengesCompleted,
+    String? avatarPath,
+    bool clearAvatarPath = false,
+    String? wisdomRecordingPath,
+    bool clearWisdomRecordingPath = false,
   }) {
     return UserProfile(
       name: name ?? this.name,
@@ -65,6 +73,8 @@ class UserProfile {
       totalSpellsCreated: totalSpellsCreated ?? this.totalSpellsCreated,
       totalUpgrades: totalUpgrades ?? this.totalUpgrades,
       dailyChallengesCompleted: dailyChallengesCompleted ?? this.dailyChallengesCompleted,
+      avatarPath: clearAvatarPath ? null : (avatarPath ?? this.avatarPath),
+      wisdomRecordingPath: clearWisdomRecordingPath ? null : (wisdomRecordingPath ?? this.wisdomRecordingPath),
     );
   }
 
@@ -80,6 +90,8 @@ class UserProfile {
     'totalSpellsCreated': totalSpellsCreated,
     'totalUpgrades': totalUpgrades,
     'dailyChallengesCompleted': dailyChallengesCompleted,
+    'avatarPath': avatarPath,
+    'wisdomRecordingPath': wisdomRecordingPath,
   };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
@@ -96,6 +108,8 @@ class UserProfile {
     dailyChallengesCompleted: json['dailyChallengesCompleted'] != null
         ? List<String>.from(json['dailyChallengesCompleted'] as List)
         : [],
+    avatarPath: json['avatarPath'] as String?,
+    wisdomRecordingPath: json['wisdomRecordingPath'] as String?,
   );
 
   String encode() => jsonEncode(toJson());
