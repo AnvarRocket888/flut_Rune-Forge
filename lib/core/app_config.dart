@@ -64,8 +64,8 @@ class AppConfig {
   static const Color titleTextColor = Color(0xFFFFFFFF);
   static const Color subtitleTextColor = Color(0x80FDFDFD);
 
-  static const Color yesButtonColor = Color(0xFFFFB301);
-  static const Color yesButtonShadowColor = Color(0xFF8B3619);
+  static const Color yesButtonColor = Color(0xFF1D1622);
+  static const Color yesButtonShadowColor = Color(0xFF1D1622);
   static const Color yesButtonTextColor = Color(0xFFFFFFFF);
   static const Color skipTextColor = Color(0x7DF9F9F9);
 
