@@ -90,7 +90,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                           child: Text(
                             'Allow notifications about bоnusеs and рrоmоs',
                             style: TextStyle(
-                              fontSize: isLandscape ? 18 : 16,
+                              fontSize: isLandscape ? 22 : 20,
                               fontWeight: FontWeight.w600,
                               color: AppConfig.titleTextColor,
                               height: 1.3,
@@ -109,7 +109,7 @@ class _PushRequestScreenState extends State<PushRequestScreen> {
                           child: Text(
                             'Stay tuned with best оffеrs from our саsinо',
                             style: TextStyle(
-                              fontSize: isLandscape ? 16 : 14,
+                              fontSize: isLandscape ? 20 : 18,
                               fontWeight: FontWeight.w500,
                               color: AppConfig.subtitleTextColor,
                               height: 1.3,

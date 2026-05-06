@@ -77,6 +77,6 @@ class AppConfig {
     ),
   );
 
-  static const Color errorScreenTextColor = Color.fromARGB(255, 255, 0, 0);
-  static const Color errorScreenIconColor = Color.fromARGB(251, 255, 0, 0);
+  static const Color errorScreenTextColor = Color(0xFFFFFFFF);
+  static const Color errorScreenIconColor = Color(0xFFFFFFFF);
 }
